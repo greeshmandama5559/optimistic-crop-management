@@ -1,0 +1,371 @@
+{% extends "base.html" %}
+{% block title %} Suggestions {% endblock %}
+
+{% block head %}
+
+<style>
+    :root {
+        --primary-color: #0d7c66;
+        --secondary-color: #0d7c66;
+        --accent-color: #a0c227;
+        --text-color: #333;
+        --bg-color: #f8f9fa;
+    }
+
+    .container {
+        max-width: 1200px;
+        width: 100%;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .dashboard {
+        display: grid;
+        grid-template-columns: repeat(1, 1fr);
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .card {
+        /* #f5fbf9 */
+        background: #f5fbf9;
+        border-radius: 12px;
+        padding: 2rem;
+        padding-bottom: 3rem;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .card h2{
+        color: #0d7c66;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+    }
+
+    .season-guide {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1rem;
+    }
+
+    .season-card {
+        background: white;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.2);
+        color: black;   
+    }
+
+    .season-card h3{
+        color: #0d7c66;
+    }
+
+    .season-card div,p{
+        margin-bottom: 5px;
+    }
+
+    .season-card ul{
+        margin-left: 20px;
+        margin-bottom: 5px;
+    }
+
+    .converter {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        margin-top: 1rem;
+    }
+
+    input, select {
+        padding: 0.8rem;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        width: 100%;
+        font-size: 1rem;
+    }
+
+    button {
+        background: #0d7c66;
+        color: white;
+        border: none;
+        padding: 0.8rem 1.5rem;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+    }
+
+    button:hover {
+        background: #123c15;
+    }
+
+    .season-card strong{
+        color: #0d7c66;
+    }
+
+    .rain-head{
+        margin-top: 5px;
+        margin-bottom: 5px;
+        font-size: 1rem;
+    }
+
+    .rain-states{
+        margin-bottom: 5px;
+    }
+
+    .result {
+        margin-top: 1rem;
+        padding: 1rem;
+        background: var(--accent-color);
+        border-radius: 6px;
+        display: none;
+    }
+
+    .rem-crops{
+        list-style: none;
+        margin-top: 8px;
+    }
+
+    .rem-crops li {
+        padding: 3px 0;
+    }
+    .rem-crops li::before {
+        content: "🌱";
+        margin-right: 5px;
+    }
+
+
+    @media (max-width: 768px) {
+        .dashboard {
+            grid-template-columns: 1fr;
+        }
+        
+        .converter {
+            flex-direction: column;
+        }
+    }
+    @media (max-width: 480px) {
+        .temp-guide{
+            font-size: 1rem;
+        }
+    }
+
+    .crop-list {
+        list-style: none;
+        margin-top: 1rem;
+    }
+
+    .crop-list li {
+        padding: 0.5rem;
+        background: #f8f9fa;
+        margin-bottom: 0.5rem;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .crop-list li i {
+        color: var(--primary-color);
+    }
+
+    .temperature-scale {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 0.5rem;
+        font-size: 0.9em;
+    }
+    .states-list {
+        list-style: none;
+        padding: 0;
+    }
+    .states-list li {
+        padding: 3px 0;
+    }
+    .states-list li::before {
+        content: "🌧️";
+        margin-right: 5px;
+    }
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="dashboard">
+        <section class="card" style="margin-top: 50px;">
+            <div style="display: flex; justify-content: center; margin-bottom: 20px;"><h2 class="temp-guide">🌡️Seasonal Temperature Guide</h2></div>
+            <div class="season-guide">
+                <div class="season-card">
+                    <h3>monsoon 🌧️</h3>
+                    <div class="temperature-scale">
+                        <span>-> 20-30°C</span>
+                    </div>
+                    <p>-> (June - September)</p>
+                    <p>-> Ideal for water-intensive crops.</p>
+                    <p>-> Major growing season for Kharif.</p>
+                </div>
+                <div class="season-card">
+                    <h3>Winter ❄️</h3>
+                    <div class="temperature-scale">
+                        <span>-> 10-30°C</span>
+                    </div>
+                    <p>-> (December - February)</p>
+                    <p>-> Ideal for leafy vegetables</p>
+                    <p>-> Major growing season for Rabi.</p>
+                </div>
+                <div class="season-card">
+                    <h3>Summer ☀️</h3>
+                    <div class="temperature-scale">
+                        <span>-> 35-45°C</span>
+                    </div>
+                    <p>-> (March - June)</p>
+                    <p>-> Perfect for Humid climate crops</p>
+                    <p>-> Preparation of Kharif crops begins.</p>
+                </div>
+                <!-- <div class="season-card">
+                    <h3>Autumn 🍁</h3>
+                    <div class="temperature-scale">
+                        <span>25-34°C</span>
+                    </div>
+                    <p>(September - October)</p>
+                    <p>It is Harvesting Period.</p>
+                </div> -->
+            </div>
+        </section>
+
+        <section class="card">
+            <div style="display: flex; justify-content: center;"><h2>Crop Suggestions 🌾</h2></div>
+            <div class="season-guide">
+                <div class="season-card">
+                    <h3>Kharif (monsoon crops)</h3>
+                    <ul class="rem-crops">
+                        <li>Rice</li>
+                        <li>Maize(corn)</li>
+                        <li>Cotton</li>
+                        <li>Soybeans</li>
+                    </ul>
+                    <p>Harvested in Autumn, around Sep - Oct.</p>
+                </div>
+                <div class="season-card">
+                    <h3>Rabi (Winter crops)</h3>
+                    <ul class="rem-crops">
+                        <li>Wheat</li>
+                        <li>Potato</li>
+                        <li>Banana</li>
+                        <li>Tomato</li>
+                    </ul>
+                    <p>Harvested in Spring, around March - April.</p>
+                </div>
+                <div class="season-card" id="zaid-crop">
+                    <h3>Zaid (Summer crops)</h3>
+                    <ul class="rem-crops">
+                        <li>Groundnut</li>
+                        <li>Sugarcane</li>
+                        <li>Watermelon</li>
+                        <li>Cucumber</li>
+                    </ul>
+                    <p>Harvested from jun - jul (vary based on crop)</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <div style="display: flex; justify-content: center; margin-bottom: 20px;"><h2>Annual Rainfall ☔</h2></div>
+            <div class="season-guide">
+                <div class="season-card">
+                    <h3 class="rain-head">High Rainfall Regions</h3>
+                    <ul class = "states-list">
+                        <li>Meghalaya</li>
+                        <li>Assam</li>
+                        <li>Arunachal Pradesh</li>
+                        <li>West Bengal</li>
+                        <li>Kerala</li>
+                        <li>Karnataka(Coastal)</li>
+                        <li>Sikkim</li>
+                        <li>Goa</li>
+                    </ul>
+                    <p><strong>Rainfall:</strong> 2000-4000 mm</p>
+                </div>
+                <div class="season-card">
+                    <h3 class="rain-head">Moderate Rainfall Regions</h3>
+                    <ul class = "states-list">
+                        <li>Madhya Pradesh</li>
+                        <li>Himachal Pradesh</li>
+                        <li>Uttar Pradesh(Hills)</li>
+                        <li>Nagaland</li>
+                        <li>Odisha</li>
+                        <li>Tripura</li>
+                        <li>Manipur</li>
+                        <li>Bihar</li>
+                        <li>Mizoram</li>
+                    </ul>
+                    <p><strong>Rainfall:</strong> 1000-2000 mm</p>
+                </div>
+                <div class="season-card" id="zaid-crop">
+                    <h3 class="rain-head">Low Rainfall Regions</h3>
+                    <ul class = "states-list">
+                        <li>Andhra Pradesh</li>
+                        <li>Telangana</li>
+                        <li>Uttar Pradesh</li>
+                        <li>Punjab</li>
+                        <li>Rajasthan(East)</li>
+                        <li>Gujarat</li>
+                        <li>Maharashtra</li>
+                        <li>Karnataka(North)</li>
+                    </ul>
+                    <p><strong>Rainfall:</strong> 550-1200 mm</p>
+                </div>
+                <div class="season-card" id="zaid-crop">
+                    <h3 class="rain-head">Very Low Rainfall Regions</h3>
+                    <ul class = "states-list">
+                        <li>Rajasthan(Thar desert)</li>
+                        <li>Gujarat(Kuch)</li>
+                        <li>Chhattisgarh</li>
+                        <li>Haryana</li>
+                        <li>Delhi</li>
+                        <li>Ladakh</li>
+                    </ul>
+                    <p><strong>Rainfall:</strong> 150-650 mm</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Land Conversion (Square feet to acres)</h2>
+            <div class="converter">
+                <input type="number" id="squareFeet" placeholder="Square Feet" required>
+                <button onclick="convertUnits()">Convert</button>
+            </div>
+            <div class="result" id="conversionResult"></div>
+        </section>
+    </div>
+</div>
+
+<script>
+
+document.querySelectorAll('.toggle-btn').forEach(button => {
+    button.addEventListener('click', function() {
+        const statesList = this.nextElementSibling;
+        statesList.style.display = statesList.style.display === 'none' ? 'block' : 'none';
+        this.innerHTML = statesList.style.display === 'none' ? 'View States ▼' : 'Hide States ▲';
+    });
+});
+
+    function convertUnits() {
+        const sqft = document.getElementById('squareFeet').value;
+        const acres = (sqft / 43560).toFixed(4);
+        const result = document.getElementById('conversionResult');
+        
+        result.style.display = 'block';
+        result.innerHTML = `
+            ${sqft} sq.ft = ${acres} acres
+            <br>
+            <small>1 acre = 43,560 square feet</small>`;
+    }
+</script>
+
+{% endblock %}

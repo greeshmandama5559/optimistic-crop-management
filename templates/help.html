@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+
+{% block title %} Help Center {% endblock %}
+
+{% block head %}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+    .container {
+        max-width: 1200px;
+        margin: 80px auto;
+        padding: 40px 20px;
+    }
+
+    .help-header {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+
+    .help-header h1 {
+        font-size: 2.8rem;
+        margin-bottom: 20px;
+        color: #0d7c66;
+    }
+
+    .help-categories {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        margin-bottom: 50px;
+    }
+
+    .help-card {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .help-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .help-card i {
+        font-size: 2rem;
+        color: #0d7c66;
+        margin-bottom: 20px;
+    }
+
+    .help-card h3 {
+        font-size: 1.4rem;
+        margin-bottom: 15px;
+        color: #2c3e50;
+    }
+
+    .faq-section {
+        background: white;
+        border-radius: 15px;
+        padding: 40px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .faq-item {
+        border-bottom: 1px solid #eee;
+        padding: 20px 0;
+    }
+
+    .faq-question {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        padding: 10px 0;
+    }
+
+    .faq-question:hover {
+        color: #0d5483;
+    }
+
+    .faq-answer {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-out;
+        padding-left: 20px;
+        color: #636e72;
+    }
+
+    .contact-support {
+        text-align: center;
+        margin-top: 50px;
+        padding: 40px;
+        background: #0d7c66;
+        border-radius: 15px;
+        color: white;
+    }
+
+    .contact-support h2 {
+        margin-bottom: 30px;
+    }
+
+    .contact-options {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        flex-wrap: wrap;
+    }
+
+    .contact-option {
+        padding: 20px 30px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 10px;
+        transition: transform 0.3s ease;
+    }
+
+    .contact-option:hover {
+        transform: translateY(-3px);
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            padding: 20px 15px;
+            max-width: 350px;
+        }
+        
+        .help-header h1 {
+            font-size: 2rem;
+        }
+        
+        .faq-section {
+            padding: 20px;
+        }
+    }
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <header class="help-header">
+        <h1>How Can We Help?</h1>
+        <p>Find answers or contact our support team</p>
+    </header>
+
+    <div class="help-categories">
+        <div class="help-card">
+            <i class="fas fa-book-open"></i>
+            <h3>Knowledge Base</h3>
+            <p>Identify correct climate condition using weather app, and identify amount of pesticides used</p>
+        </div>
+        <div class="help-card">
+            <i class="fas fa-comments"></i>
+            <h3>FAQs</h3>
+            <p>Find quick answers to common questions</p>
+        </div>
+    </div>
+
+    <section class="faq-section">
+        <h2>Asked Questions</h2>
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>Can your system predict crop yield on wheat?</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                <p>Yes! Our crop yield prediction system uses Random Forest Regression model to analyze past yield data, 
+                    weather conditions, and other factors.</p>
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">
+                <span>My tomato plants have yellow spots on their leaves. Can your system help me identify the disease and suggest treatments?</span>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="faq-answer">
+                <p>Absolutely! Our plant disease prediction system, powered by deep learning (TensorFlow CNN model), can analyze images of affected leaves,
+                    Simply upload a clear photo of your tomato plant, and our system will identify possible diseases like early blight or bacterial spots.</p>
+            </div>
+        </div>
+        <!-- Add more FAQ items here -->
+    </section>
+
+    <section class="contact-support">
+        <h2>Still Need Help?</h2>
+        <div class="contact-options">
+            <div class="contact-option">
+                <i class="fas fa-phone-alt"></i>
+                <p>+91 7794932482</p>
+            </div>
+            <div class="contact-option">
+                <i class="fas fa-envelope"></i>
+                <p>greeshmandama5559@gmail.com</p>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+    // Add FAQ toggle functionality
+    document.querySelectorAll('.faq-question').forEach(item => {
+        item.addEventListener('click', () => {
+            const answer = item.nextElementSibling;
+            answer.style.maxHeight = answer.style.maxHeight ? null : answer.scrollHeight + 'px';
+            item.querySelector('i').classList.toggle('fa-chevron-up');
+        });
+    });
+
+    // Add smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute('href')).scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+    });
+</script>
+
+{% endblock %}

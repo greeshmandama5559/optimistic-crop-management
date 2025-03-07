@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+{% block title %} About {% endblock %}
+
+{% block head %}
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+        .container {
+            max-width: 100%;
+            margin: 0px auto;
+            /* min-height: 100vh; */
+        }
+
+        .header {
+            text-align: center;
+            margin-top: 80px;
+        }
+        .header h1, .header p {
+            display: block;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            column-gap: 40px;
+            margin-top: 80px;
+            padding: 0px 20px;
+            margin-bottom: 30px;
+        }
+
+        .team-member {
+            background: white;
+            color: #2c3e50;
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            transition: transform 0.3s ease;
+            position: relative;
+            box-shadow: 0 20px 30px rgba(0,0,0,0.12);
+        }
+
+        .team-member:hover {
+            transform: translateY(-10px);
+        }
+
+        .image-container {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin: -80px auto 20px;
+            border: 3px solid white;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .team-member img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .member-info h3 {
+            color: #0d7c66;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .member-info p.role {
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .member-info p.description {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .social-links a {
+            color: #0d7c66;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: #4ba274;
+            transform: scale(1.2);
+        }
+
+        @media (max-width: 768px) {
+            .heading h1 {
+                font-size: 2.5rem;
+            }
+            .team-grid{
+                margin-top: 40px;
+            }
+
+            .header {
+                margin-top: 100px;
+            }
+            
+            .team-member {
+                max-height: 400px;
+                margin-top: 50px;
+            }
+        }
+
+        .image-container {
+            animation: float 4s ease-in-out infinite;
+        }
+    </style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+    <div class="header">
+        <h1 style="color: #0d7c66;">About Us</h1>
+        <p style="font-size: 15px;">We are a passionate team dedicated to delivering excellence in our field.</p>
+    </div>
+    <div class="team-grid">
+        <div class="team-member">
+            <div class="image-container">
+                <img src="static/images/female2.jpg" alt="Alex Johnson">
+            </div>
+            <div class="member-info">
+                <h3>Jenssy</h3>
+                <p class="role">Team Lead</p>
+                <p class="description">Led the development of a <strong>Plant Disease Detection</strong> system using deep learning models, optimizing accuracy by experimenting with multiple models.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="team-member">
+            <div class="image-container">
+                <img src="static/images/female1.jpg" alt="Sarah Chen">
+            </div>
+            <div class="member-info">
+                <h3>Harshitha</h3>
+                <p class="role">Team Member</p>
+                <p class="description">Contributed to the <strong>Plant Disease Detection</strong> system by enhancing the model and gathering preventive measures for detected diseases.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="team-member">
+            <div class="image-container">
+                <img src="static/images/male1.avif" alt="Marcus Lee">
+            </div>
+            <div class="member-info">
+                <h3>Greeshman</h3>
+                <p class="role">Team Member</p>
+                <p class="description">Worked on <strong>Crop Yield Prediction</strong> by integrating the frontend and backend, while also improving accuracy through experimenting with various machine learning models.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="team-member">
+            <div class="image-container">
+                <img src="static/images/male2.jpg" alt="Emma Wilson">
+            </div>
+            <div class="member-info last">
+                <h3>Phani</h3>
+                <p class="role">Team Member</p>
+                <p class="description"> Handled dataset collection, performed data cleaning and analysis, and contributed to <strong>frontend development</strong> for an intuitive and effective user interface.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

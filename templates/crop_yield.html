@@ -1,0 +1,452 @@
+{% extends "base.html" %}
+
+{% block title %} crop-yield-prediction {% endblock %}
+
+{% block head %}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const States = ['Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar',
+            'Chhattisgarh', 'Delhi', 'Goa', 'Gujarat', 'Haryana',
+            'Himachal Pradesh', 'Jammu and Kashmir', 'Jharkhand', 'Karnataka',
+            'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur', 'Meghalaya',
+            'Mizoram', 'Nagaland', 'Odisha', 'Puducherry', 'Punjab', 'Sikkim',
+            'Tamil Nadu', 'Telangana', 'Tripura', 'Uttar Pradesh',
+            'Uttarakhand', 'West Bengal'];
+    
+        const seasonTypes = ['Whole Year', 'Kharif', 'Rabi'];
+    
+        const seasonTypes2 = ['Whole Year', 'Kharif', 'Rabi', 'Summer'];
+    
+        const cropType = ['Rice', 'Wheat', 'Maize', 'Potato', 'Onion', 'Sugarcane', 'Cotton',
+            'Coconut', 'Soybean', 'Groundnut'];
+    
+        const cropType2 = ['Rice', 'Wheat', 'Arecanut', 'Coconut', 'Cotton(lint)', 'Dry chillies',
+            'Maize', 'Banana', 'Onion', 'Potato', 'Sugarcane', 'Sweet potato', 'Turmeric',
+            'Black pepper', 'Coriander', 'Garlic', 'Ginger', 'Groundnut', 'Ragi', 'Cashewnut',
+            'Soyabean', 'Barley', 'Peas & beans (Pulses)', 'Oilseeds total'];
+    
+        cropType.sort();
+    
+        const stateSelect = document.getElementById("state");
+        const seasonSelect = document.getElementById("season");
+        const cropSelect = document.getElementById("crop-type");
+        const pesticidesInput = document.getElementById("pesticides");
+    
+        function resetToDefault() {
+            seasonSelect.innerHTML = "";
+            let defaultSeason = document.createElement("option");
+            defaultSeason.value = "";
+            defaultSeason.textContent = "Select";
+            seasonSelect.appendChild(defaultSeason);
+            
+            seasonTypes.forEach(season => {
+                let option = document.createElement("option");
+                option.value = season;
+                option.textContent = season;
+                seasonSelect.appendChild(option);
+            });
+    
+            cropSelect.innerHTML = "";
+            let defaultCrop = document.createElement("option");
+            defaultCrop.value = "";
+            defaultCrop.textContent = "Select";
+            cropSelect.appendChild(defaultCrop);
+    
+            cropType.forEach(crop => {
+                let option = document.createElement("option");
+                option.value = crop;
+                option.textContent = (crop === "Maize") ? `${crop}(corn)` : crop;
+                cropSelect.appendChild(option);
+            });
+        }
+    
+        pesticidesInput.addEventListener('input', function (event) {
+            cropSelect.innerHTML = "";
+            seasonSelect.innerHTML = "";
+    
+            let option = document.createElement("option");
+            option.value = "";
+            option.textContent = "Select";
+            cropSelect.appendChild(option);
+    
+            let option2 = document.createElement("option");
+            option2.value = "";
+            option2.textContent = "Select";
+            seasonSelect.appendChild(option2);
+    
+            if (event.target.value.trim() !== "") {
+                cropType2.forEach(crop => {
+                    let option = document.createElement("option");
+                    option.value = crop;
+                    option.textContent = (crop === "Maize") ? `${crop}(corn)` : crop;
+                    cropSelect.appendChild(option);
+                });
+    
+                seasonTypes2.forEach(season => {
+                    let option = document.createElement("option");
+                    option.value = season;
+                    option.textContent = season;
+                    seasonSelect.appendChild(option);
+                });
+            } else {
+                resetToDefault();
+            }
+        });
+    
+        States.forEach(state => {
+            let option = document.createElement("option");
+            option.value = state;
+            option.textContent = state;
+            stateSelect.appendChild(option);
+        });
+        resetToDefault();
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        function fetchYieldData() {
+            document.querySelectorAll(".data-display").forEach(display => {
+                display.innerText = "N/A";
+            });
+            document.getElementById("rainfall").value = "";
+            document.getElementById("pesticides").value = "";
+            document.getElementById("area").value = "";
+            document.getElementById("season").value = "";
+            document.getElementById("state").value = "";
+            document.getElementById("crop-type").value = "";
+        }
+    
+        fetchYieldData();
+    
+        document.getElementById("cropForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+            
+            const submitBtn = document.querySelector(".submit-btn");
+            submitBtn.disabled = true;
+            submitBtn.classList.add("disabled");
+    
+            document.querySelectorAll(".data-display").forEach(display => {
+                display.innerText = "";
+            });
+    
+            document.querySelectorAll(".spinner").forEach(spinner => {
+                spinner.style.display = "inline-block";
+            });
+    
+            let formData = {
+                "rainfall": document.getElementById("rainfall").value,
+                "pesticides": document.getElementById("pesticides").value,
+                "area": document.getElementById("area").value,
+                "season": document.getElementById("season").value,
+                "state": document.getElementById("state").value,
+                "crop-type": document.getElementById("crop-type").value,
+            };
+    
+            fetch("/crop_yield_prediction", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.querySelector("#yield-rate .data-display").innerText = data.yieldrt + "/acre";
+                document.querySelector("#min-yield .data-display").innerText = data.minyield + "/" + formData.area + " acres";
+                document.querySelector("#max-yield .data-display").innerText = data.maxyield + "/" + formData.area + " acres";
+            })
+            .catch(error => document.getElementById("error_msg").innerText = error)
+            .finally(() => {
+                document.querySelectorAll(".spinner").forEach(spinner => {
+                    spinner.style.display = "none";
+                });
+                submitBtn.disabled = false;
+                submitBtn.classList.remove("disabled");
+            });
+        }); 
+    });
+</script>
+<style>
+    .main-container {
+        display: flex;
+        justify-content: space-between;
+        gap: 3rem;
+        padding: 2rem;
+        margin: 5rem auto 0 auto;
+        align-items: stretch;
+    }
+
+    .form-container {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            width: 60%;
+            transition: all 0.3s ease;
+        }
+
+        .info-panel {
+            width: 40%;
+            background: #f5fbf9;
+            border-radius: 12px;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.05);
+        }
+
+        .info-box {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            text-align: center;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+        }
+
+        .info-box h3 {
+            color: #0d7c66;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+    
+        .info-box p {
+            color: #5f6368;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .form-title {
+            color: #0d7c66;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group {
+            flex: 1;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #5f6368;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #dadce0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #1a73e8;
+            box-shadow: 0 0 0 2px rgba(26,115,232,0.2);
+        }
+
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 18px;
+        }
+
+        .submit-btn {
+            background: #0d7c66;
+            color: white;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+            margin-top: 2rem;
+        }
+
+        .submit-btn:hover {
+            background: #095445;
+            transform: translateY(-1px);
+        }
+        .spinner {
+            display: none;
+            border: 3px solid rgba(0, 0, 0, 0.2);
+            border-top: 3px solid #095445;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            animation: spin 1s linear infinite;
+        }
+    
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    
+        .disabled {
+            background: gray;
+            cursor: not-allowed;
+            color: black;
+        }
+        .disabled:hover{
+            background: gray;
+            cursor: not-allowed;
+            color: black;
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+                padding: 1rem;
+            }
+            .form-container, 
+            .info-panel{
+                width: 100%;
+                max-width: 100%;
+            }
+            .form-container {
+                padding: 1.5rem;
+            }
+
+            .info-panel {
+                order: 1;
+                padding: 1.5rem;
+            }
+    
+            .info-box {
+                padding: 1.5rem;
+                margin: 0 17px;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .form-title {
+                font-size: 1.5rem;
+            }
+
+            input, select {
+                padding: 10px 14px;
+                font-size: 0.9rem;
+            }
+            .submit-btn{
+                margin-top: 0rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+        .form-container {   
+            max-width: 350px;
+            padding: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="main-container">
+    <div class="form-container">
+        <h1 class="form-title">Agricultural Data Entry</h1>
+        <form id="cropForm">
+            <div class="form-row">
+                <div class="input-group">
+                    <label for="rainfall">Annual Rainfall(in mm):</label>
+                    <input type="number" id="rainfall" name="rainfall" step="0.1" placeholder="Eg. 1200.5" value="{{data[0] if data and data[0] != None else ''}}" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="pesticides">Pesticides(in Kgs)(Optional):</label>
+                    <input type="number" id="pesticides" name="pesticides" step="0.01" placeholder="Eg. 800.75" value=0.0>
+                </div>
+            </div>
+    
+            <div class="form-row">
+                <div class="input-group">
+                    <label for="season">Select Season:</label>
+                    <select id="season" name="season" required>
+                        <option value="">Select</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="area">Area(in Acres):</label>
+                    <input type="number" id="area" name="area" step="0.01" placeholder="Eg. 2.75" value="{{data[2] if data and data[2] != None else ''}}" required>
+                </div>
+            </div>
+    
+            <div class="form-row">
+                <div class="input-group">
+                    <label for="state">Select State:</label>
+                    <select id="state" name="state" required>
+                        <option value="">Select</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="crop-type">Crop Type:</label>
+                    <select id="crop-type" name="crop-type" required>
+                        <option value="">Select</option>
+                    </select>
+                </div>
+            </div>
+    
+            <button type="submit" class="submit-btn">Submit Data</button>
+        </form>
+    
+        <div class="error_div" style="width: 100%; display: flex; justify-content: center; align-items: center; margin-top: 10px;">
+            <h2 style="font-size: 1rem;"><span id="error_msg" style="color: rgb(118, 24, 24);"></span></h2>
+        </div>
+    </div>
+    <div class="info-panel">
+        <div style="width: 100%; display: flex; justify-content: center; align-items: center; margin-bottom: 5px;">
+            <h2 style="color: #0d7c66; font-size: 20px;">Expected Yield(in Kgs)</h2>
+        </div>
+        <div class="info-box">
+            <h3 id="yield-rate">
+                <span class="data-display">N/A</span>
+                <span class="spinner"></span>
+            </h3>    
+            <p>Yield Rate per Acre</p>
+        </div>
+        <div class="info-box">
+            <h3 id="min-yield">
+                <span class="data-display">N/A</span>
+                <span class="spinner"></span>
+            </h3>
+            <p>Min. Expected Yield</p>
+        </div>
+        <div class="info-box" style="margin-bottom: 5px;">
+            <h3 id="max-yield">
+                <span class="data-display">N/A</span>
+                <span class="spinner"></span>
+            </h3>
+            <p>Max. Expected Yield</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

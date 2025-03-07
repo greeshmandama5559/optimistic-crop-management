@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    {% block head %} {% endblock %}
+
+    <script>
+        window.onload = function() {
+            if(window.location.pathname === '/home' || window.location.pathname === '/') {
+                history.replaceState(null, null, window.location.href);
+                window.addEventListener('popstate', function() {
+                    history.replaceState(null, null, window.location.href);
+                });
+            }
+        };
+    </script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary-color: #2c5f2d;
+            --secondary-color: #97bc62;
+            --accent-color: #f4fa9c;
+            --text-dark: #1a1a1a;
+            --box-color: rgba(255,255,255,0.95);
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .nav {
+            width: 100%;
+        }
+        
+        nav {
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            z-index: 1000;
+        }
+        
+        .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #0d7c66;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 0.7rem;
+        }
+        
+        .nav-links a {
+            font-size: 1.1rem;
+            text-decoration: none;
+            color: #0c705c;
+            font-weight: 740;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            border: 2px solid transparent;
+        }
+        
+        .nav-links a:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .act {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background-color: #0d7c66;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+            
+            .nav-links {
+                opacity: 0;
+                pointer-events: none;
+                position: absolute;
+                top: 100%;
+                right: 0;
+                transform: translateY(-30px);
+                flex-direction: column;
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(10px);
+                width: 50%;
+                padding: 1rem;
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                transition: opacity 0.3s ease, transform 0.3s ease, right 0.3s ease;
+            }
+            
+            .nav-links.active {
+                opacity: 1;
+                pointer-events: auto;
+                right: 5%;
+                transform: translateY(0);
+            }
+            
+            .nav-links a {
+                padding: 2px;
+                text-align: center;
+            }
+            
+            .logo {
+                font-size: 1.5rem;
+            }
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(4px, 6px);
+        }
+            
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+            
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(4px, -6px);
+        }
+
+    </style>
+
+</head>
+<body>
+    <div class="nav">
+        <nav>
+            <a href="{{ url_for('home') }}" style="text-decoration: none;"><div class="logo">Crop Management</div></a>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div class="nav-links">
+                <a href="{{ url_for('home') }}" onclick="navigateHome(event)" class="{% if request.path == url_for('home') %}act{% endif %}">Home</a>
+                <a href="{{ url_for('suggestions') }}" class="{% if request.path == url_for('suggestions') %}act{% endif %}">Suggestions</a>
+                <a href="{{ url_for('help') }}" class="{% if request.path == url_for('help') %}act{% endif %}">Help</a>
+                <a href="{{ url_for('about') }}" class="{% if request.path == url_for('about') %}act{% endif %}">About</a>
+            </div>
+        </nav>
+    </div>
+
+    {% block content %} 
+    
+    {% endblock %}
+    
+    <script>
+        const hamburger = document.querySelector('.hamburger');
+        const navLinks = document.querySelector('.nav-links');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!hamburger.contains(e.target) && !navLinks.contains(e.target)) {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+            }
+        });
+
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+            });
+        });
+        function navigateHome(event) {
+            event.preventDefault();
+            history.replaceState(null, null, '/home');
+            window.location.href = '/home';
+        }
+    </script>
+</body>
+</html>
