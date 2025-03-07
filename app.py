@@ -1,6 +1,6 @@
 from flask import Flask,redirect ,url_for,render_template,request,jsonify, session
-from tensorflow import keras
-from tensorflow.keras.preprocessing import image
+import keras
+from keras.preprocessing import image
 import numpy as np
 import pickle
 from dotenv import load_dotenv
